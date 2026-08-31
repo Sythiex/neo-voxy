@@ -65,6 +65,8 @@ public class WorldImporter implements IDataImporter {
    private final PalettedContainerRO<Holder<Biome>> defaultBiomeProvider;
    private final Codec<PalettedContainerRO<Holder<Biome>>> biomeCodec;
    private final Codec<PalettedContainer<BlockState>> blockStateCodec;
+   private final int minBuildHeight;
+   private final int heightmapBits;
    private final AtomicInteger estimatedTotalChunks = new AtomicInteger();
    private final AtomicInteger totalChunks = new AtomicInteger();
    private final AtomicInteger chunksProcessed = new AtomicInteger();
@@ -80,6 +82,8 @@ public class WorldImporter implements IDataImporter {
 
    public WorldImporter(WorldEngine worldEngine, Level mcWorld, ServiceManager sm, BooleanSupplier runChecker) {
       this.world = worldEngine;
+        this.minBuildHeight = mcWorld.getMinY();
+      this.heightmapBits = 32 - Integer.numberOfLeadingZeros(mcWorld.getHeight());
       this.service = sm.createService(() -> new Pair<>(() -> this.jobQueue.poll().run(), () -> {}), 3L, "World importer", runChecker);
       Registry<Biome> biomeRegistry = mcWorld.registryAccess().lookupOrThrow(Registries.BIOME);
       final Reference<Biome> defaultBiome = biomeRegistry.getOrThrow(Biomes.PLAINS);
@@ -476,10 +480,11 @@ public class WorldImporter implements IDataImporter {
                   );
                }
 
+               int[] surfaceHeights = this.decodeSurfaceHeights(chunk);
                for (Tag sectionE : (ListTag)chunk.getList("sections").orElseThrow()) {
                   CompoundTag section = (CompoundTag)sectionE;
                   int y = section.getIntOr("Y", Integer.MIN_VALUE);
-                  this.importSectionNBT(x, y, z, section);
+                  this.importSectionNBT(x, y, z, section, surfaceHeights);
                }
             } catch (Exception var11) {
                Logger.error("Exception importing world chunk:", var11);
@@ -490,7 +495,7 @@ public class WorldImporter implements IDataImporter {
       }
    }
 
-   private void importSectionNBT(int x, int y, int z, CompoundTag section) {
+   private void importSectionNBT(int x, int y, int z, CompoundTag section, int[] surfaceHeights) {
       if (!section.getCompound("block_states").isEmpty()) {
          byte[] blockLightData = section.getByteArray("BlockLight").orElse(EMPTY);
          byte[] skyLightData = section.getByteArray("SkyLight").orElse(EMPTY);
@@ -520,7 +525,7 @@ public class WorldImporter implements IDataImporter {
             VoxelizedSection csec = WorldConversionFactory.convert(
                SECTION_CACHE.get().setPosition(x, y, z), this.world.getMapper(), blockStates, biomes, (bx, by, bz) -> {
                   int block = 0;
-                  int sky = 0;
+               int sky = surfaceHeights != null && y * 16 + by >= surfaceHeights[bx | bz << 4] - 1 ? 15 : 0;
                   if (blockLight != null) {
                      block = blockLight.get(bx, by, bz);
                   }
@@ -536,6 +541,20 @@ public class WorldImporter implements IDataImporter {
             WorldUpdater.insertUpdate(this.world, csec);
          }
       }
+   }
+
+   private int[] decodeSurfaceHeights(CompoundTag chunk) {
+      CompoundTag heightmaps = chunk.getCompound("Heightmaps").orElse(null);
+      if (heightmaps == null) return null;
+      long[] packed = heightmaps.getLongArray("WORLD_SURFACE").orElse(new long[0]);
+      if (packed.length == 0) return null;
+      int bits = this.heightmapBits;
+      int perLong = 64 / bits;
+      if (packed.length * perLong < 256) return null;
+      long mask = (1L << bits) - 1L;
+      int[] result = new int[256];
+      for (int i = 0; i < result.length; i++) result[i] = this.minBuildHeight + (int)(packed[i / perLong] >>> (i % perLong * bits) & mask);
+      return result;
    }
 
    private interface IImporterMethod<T> {

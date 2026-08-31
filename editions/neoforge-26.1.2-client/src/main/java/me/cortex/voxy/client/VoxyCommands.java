@@ -83,26 +83,29 @@ public class VoxyCommands {
    }
 
    private static int reloadInstance(CommandContext<CommandSourceStack> ctx) {
-      VoxyClientInstance instance = (VoxyClientInstance)VoxyCommon.getInstance();
-      if (instance == null) {
+      if (!reloadInstance()) {
          ((CommandSourceStack)ctx.getSource()).sendFailure(Component.translatable("Voxy must be enabled in settings to use this"));
          return 1;
-      } else {
-         IVoxyRenderSystemHolder vrsh = IVoxyRenderSystemHolder.getNullableHolder();
-         if (vrsh != null) {
-            vrsh.voxy$shutdownRenderer();
-         }
-
-         VoxyCommon.shutdownInstance();
-         System.gc();
-         VoxyCommon.createInstance();
-         LevelRenderer r = Minecraft.getInstance().levelRenderer;
-         if (r != null) {
-            r.allChanged();
-         }
-
-         return 0;
       }
+      return 0;
+   }
+
+   public static boolean reloadInstance() {
+      VoxyClientInstance instance = (VoxyClientInstance)VoxyCommon.getInstance();
+      if (instance == null) return false;
+      IVoxyRenderSystemHolder vrsh = IVoxyRenderSystemHolder.getNullableHolder();
+      if (vrsh != null) {
+         vrsh.voxy$shutdownRenderer();
+      }
+
+      VoxyCommon.shutdownInstance();
+      System.gc();
+      VoxyCommon.createInstance();
+      LevelRenderer r = Minecraft.getInstance().levelRenderer;
+      if (r != null) {
+         r.allChanged();
+      }
+      return true;
    }
 
    private static int verifyTLNs(CommandContext<CommandSourceStack> ctx, boolean attemptRepair) {

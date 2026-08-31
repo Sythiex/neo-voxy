@@ -79,7 +79,7 @@ public abstract class MixinLevelRenderer implements IVoxyRenderSystemHolder {
    @Override
    public void voxy$createRenderer() {
       if (this.renderer != null) {
-         throw new IllegalStateException("Cannot have multiple renderers");
+         return;
       } else if (!VoxyConfig.CONFIG.enabled) {
          Logger.info("Not creating renderer due to disabled");
       } else if (!VoxyConfig.CONFIG.isRenderingEnabled()) {

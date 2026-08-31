@@ -147,5 +147,12 @@
   "voxy.config.general.lodLiteShading.status.apiMismatch": "Status: unsupported Lite contract version %s; standard programs are in use.",
   "voxy.config.general.lodLiteShading.status.transitionRequired": "Status: this Lite program requires circular LOD fade; standard programs are in use.",
   "voxy.config.general.lodLiteShading.status.error": "Status: Lite load failed (%s); standard programs are in use.",
-  "voxy.lodLiteShading.chatFailure": "[Neo-Voxy] Experimental Lite LOD shading could not be enabled: %s"
+  "voxy.lodLiteShading.chatFailure": "[Neo-Voxy] Experimental Lite LOD shading could not be enabled: %s",
+  "key.categories.voxy": "Neo-Voxy",
+  "key.voxy.reload": "Reload Voxy",
+  "key.voxy.toggle_rendering": "Toggle Voxy Rendering",
+  "message.voxy.reloaded": "Voxy reloaded",
+  "message.voxy.reload_unavailable": "Voxy is not active",
+  "message.voxy.rendering_enabled": "Voxy rendering enabled",
+  "message.voxy.rendering_disabled": "Voxy rendering disabled"
 }

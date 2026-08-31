@@ -75,5 +75,12 @@
   "voxy.config.general.showJoinMessage": "Join message",
   "voxy.config.general.showJoinMessage.tooltip": "Show a version message whenever joining a server or world; disable it here.",
   "voxy.join.disableHint": "This join message can be disabled from Neo Voxy in Sodium Video Settings.",
-  "voxy.join.upgradeCleanup": "If an update causes problems, delete the Neo Voxy config and the world's Voxy cache before retrying."
+  "voxy.join.upgradeCleanup": "If an update causes problems, delete the Neo Voxy config and the world's Voxy cache before retrying.",
+  "key.categories.voxy": "Neo-Voxy",
+  "key.voxy.reload": "Reload Voxy",
+  "key.voxy.toggle_rendering": "Toggle Voxy Rendering",
+  "message.voxy.reloaded": "Voxy reloaded",
+  "message.voxy.reload_unavailable": "Voxy is not active",
+  "message.voxy.rendering_enabled": "Voxy rendering enabled",
+  "message.voxy.rendering_disabled": "Voxy rendering disabled"
 }

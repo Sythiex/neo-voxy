@@ -1,6 +1,7 @@
 package me.cortex.voxy;
 
 import me.cortex.voxy.client.VoxyClient;
+import me.cortex.voxy.client.VoxyKeyBindings;
 import me.cortex.voxy.common.config.Serialization;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -11,6 +12,7 @@ import net.neoforged.fml.common.Mod;
 public final class Voxy {
    public Voxy(IEventBus modEventBus, ModContainer container) {
       Serialization.init();
+      modEventBus.addListener(VoxyKeyBindings::register);
       VoxyClient.initializeNeoForge(container);
    }
 }
