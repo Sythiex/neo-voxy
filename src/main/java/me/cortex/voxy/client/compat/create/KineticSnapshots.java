@@ -201,7 +201,7 @@ public final class KineticSnapshots {
         if (mc.level == null || me.cortex.voxy.client.compat.ShipBorne.isShipBorne(pos)) {
             return;
         }
-        if (!(mc.level.getBlockEntity(pos) instanceof KineticBlockEntity kbe)) {
+        if (!(loadedBlockEntity(mc.level, pos) instanceof KineticBlockEntity kbe)) {
             return;
         }
         //Manager-driven: don't post the anchor back, or next tick's consume would re-refresh the
@@ -338,7 +338,7 @@ public final class KineticSnapshots {
                 if (pos.distToCenterSqr(cam.x, cam.y, cam.z) < reachSq) {
                     continue;
             }
-                if (level.getBlockEntity(pos) instanceof KineticBlockEntity be) {
+                if (loadedBlockEntity(level, pos) instanceof KineticBlockEntity be) {
                     capture(level, be);
                     captureBudget--;
             }
@@ -450,7 +450,7 @@ public final class KineticSnapshots {
                         if ((snapPos.getX() >> 4) != cx || (snapPos.getZ() >> 4) != cz) {
                             return false;
                         }
-                        if (level.getBlockEntity(snapPos) instanceof KineticBlockEntity) {
+                        if (levelChunk.getBlockEntities().get(snapPos) instanceof KineticBlockEntity) {
                             return false;
                         }
                         bucket.dirty = true;
@@ -508,9 +508,16 @@ public final class KineticSnapshots {
         }
     }
 
-    //Does the distant pipeline actually draw geometry for this position - a hollow record or an
-    //unbaked bucket draws nothing, and standing the live render down against one of those leaves a
-    //hole instead of a hand-over.
+    private static net.minecraft.world.level.block.entity.BlockEntity loadedBlockEntity(
+            ClientLevel level, BlockPos pos) {
+        var chunk = level.getChunk(pos.getX() >> 4, pos.getZ() >> 4,
+                net.minecraft.world.level.chunk.status.ChunkStatus.FULL, false);
+        if (!(chunk instanceof net.minecraft.world.level.chunk.LevelChunk levelChunk)) {
+            return null;
+        }
+        return levelChunk.getBlockEntities().get(pos);
+    }
+
     static boolean drawsSnapAt(BlockPos pos) {
         Bucket bucket = SECTIONS.get(sectionKey(pos));
         if (bucket == null || bucket.mesh == null) {
@@ -690,14 +697,7 @@ public final class KineticSnapshots {
                 axis = KineticBlockEntityRenderer.getRotationAxisOf(be);
             } catch (Throwable ignored) {
             }
-            //Phase at render time zero, not at the capture tick. Neighbouring shafts of one drivetrain
-            //are captured on different ticks (the sweep spreads work, the budget splits chunks), and a
-            //per-capture time term gives each segment its own frozen moment - a connected line reads as
-            //broken. The offset term alone is the drivetrain's pose at one shared instant, so every
-            //segment agrees; the cost is a small phase snap where a moving part crosses the LOD
-            //boundary, invisible at that distance next to adjacent segments disagreeing. The bearing
-            //top disc keeps its freeze-tick angle (bearingTopAngleRad) - that one must match the
-            //contraption pose frozen with it.
+            //Phase at render time zero, not at the capture tick. The latter would be a one-tick offset from the frozen contraption's pose, and the contraption's pose is the one the player sees at the moment of passing. The snapshot is a frozen contraption, so it should match the player's view of it, not a tick later.
             float angle = axis != null
                     ? KineticBlockEntityRenderer.getRotationOffsetForPosition(be, pos, axis) % 360.0f / 180.0f * (float) Math.PI
                     : 0.0f;
@@ -801,8 +801,7 @@ public final class KineticSnapshots {
                 snap.sky(), snap.block());
     }
 
-    //Reproduces BearingRenderer.renderSafe's top disc: spin by the bearing's own frozen angle about
-    //the facing axis, then align to the facing (catnip angle helpers inlined).
+    //Reproduces BearingRenderer.renderSafe's top disc
     private static void bakeBearingTop(DistantMeshBuilder builder, org.joml.Matrix4f transform, Snap snap,
                                        float lx, float ly, float lz) {
         var facing = snap.bearingFacing();
@@ -820,10 +819,7 @@ public final class KineticSnapshots {
         builder.transformedModel(top.get(), transform, snap.sky(), snap.block());
     }
 
-    //Chain conveyor: the wheel shaft (kinetic spin), the wheel disc, and per connection the guard
-    //plate plus the chain strap. Reproduces ChainConveyorRenderer's backend-off pass at freeze pose;
-    //the strap is its far-mip variant (static UVs, thin radius), vertices hand-built the way
-    //renderPart lays them out, textured from the vanilla chain sprite in the block atlas.
+    //Chain conveyor
     private static void bakeChainConveyor(DistantMeshBuilder builder, org.joml.Matrix4f transform, Snap snap,
                                           float lx, float ly, float lz) {
         transform.identity().translate(lx, ly, lz).translate(0.5f, 0.5f, 0.5f);

@@ -1,5 +1,19 @@
 Neo Voxy 更新日志 / Changelog
 
+## 0.4.3-beta.2（1.21.1 NeoForge 联动版）— 2026-09-05
+
+### 简体中文
+
+- 修复已加载 LOD 最远边界把未知邻区当作空气、为水体生成向上黑色立面的问题；真实水岸与已加载邻区的水体侧面保持正常。
+- 修复不同维度及高 Y 坐标下各级 LOD 地形逐级抬升，并保持表层方块材质与高度一致。
+- 统一逐级降采样时的天空光与方块光传递，修复相邻 LOD 环明暗交替。
+
+### English
+
+- Fixed upward dark water walls at the far edge of loaded LOD data by distinguishing unavailable neighbours from real air; real shorelines and loaded-neighbour fluid faces remain intact.
+- Fixed progressive terrain uplift across LOD levels in other dimensions and at high Y coordinates while preserving the correct surface material and height.
+- Stabilized sky-light and block-light propagation during successive downsampling, fixing alternating brightness between adjacent LOD rings.
+
 ## 0.3.1（26.1.2 NeoForge 客户端版）— 2026-08-25
 
 ### 简体中文

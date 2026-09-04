@@ -445,13 +445,15 @@ public class RenderDataFactory {
         return true;
     }
 
-    private void acquireNeighborData(WorldSection section, int msk) {
+    private int acquireNeighborData(WorldSection section, int msk) {
+        int unavailableMsk = 0;
         // Performance-first: do not synchronously load missing neighbor sections while building render meshes.
         // If a neighbor is not already in the active cache, treat it as air for this build. This avoids storage/IO
         // stalls during fast flight; when the neighbor is later loaded/updated, normal dirty events can rebuild meshes.
         if ((msk&1)!=0) {//-x
             var sec = this.world.acquireIfExists(section.lvl, section.x - 1, section.y, section.z);
             if (sec == null) {
+                unavailableMsk |= 1;
                 this.clearNeighborFaceSlice(0);
             } else {
                 //Note this is not thread safe! (but eh, fk it)
@@ -467,6 +469,7 @@ public class RenderDataFactory {
         if ((msk&2)!=0) {//+x
             var sec = this.world.acquireIfExists(section.lvl, section.x + 1, section.y, section.z);
             if (sec == null) {
+                unavailableMsk |= 2;
                 this.clearNeighborFaceSlice(1);
             } else {
                 //Note this is not thread safe! (but eh, fk it)
@@ -483,6 +486,7 @@ public class RenderDataFactory {
         if ((msk&4)!=0) {//-y
             var sec = this.world.acquireIfExists(section.lvl, section.x, section.y - 1, section.z);
             if (sec == null) {
+                unavailableMsk |= 4;
                 this.clearNeighborFaceSlice(2);
             } else {
                 //Note this is not thread safe! (but eh, fk it)
@@ -498,6 +502,7 @@ public class RenderDataFactory {
         if ((msk&8)!=0) {//+y
             var sec = this.world.acquireIfExists(section.lvl, section.x, section.y + 1, section.z);
             if (sec == null) {
+                unavailableMsk |= 8;
                 //Never-ingested space above the surface is open sky (vanilla stores no sky DataLayer there and
                 //chunk senders skip all-air sections); zero-lit air here would black out every neighbor-lit top
                 //face. Ingested-but-dark sections (caves) still copy through below.
@@ -520,6 +525,7 @@ public class RenderDataFactory {
         if ((msk&16)!=0) {//-z
             var sec = this.world.acquireIfExists(section.lvl, section.x, section.y, section.z - 1);
             if (sec == null) {
+                unavailableMsk |= 16;
                 this.clearNeighborFaceSlice(4);
             } else {
                 //Note this is not thread safe! (but eh, fk it)
@@ -535,6 +541,7 @@ public class RenderDataFactory {
         if ((msk&32)!=0) {//+z
             var sec = this.world.acquireIfExists(section.lvl, section.x, section.y, section.z + 1);
             if (sec == null) {
+                unavailableMsk |= 32;
                 this.clearNeighborFaceSlice(5);
             } else {
                 //Note this is not thread safe! (but eh, fk it)
@@ -547,6 +554,7 @@ public class RenderDataFactory {
                 sec.release(WorldSection.RELEASE_HINT_POSSIBLE_REUSE);
             }
         }
+        return unavailableMsk;
     }
 
     private static final long LM = (0xFFL<<55);
@@ -823,16 +831,17 @@ public class RenderDataFactory {
         }
     }
 
-    private void generateYZFluidOuterGeometry(int axis) {
+    private void generateYZFluidOuterGeometry(int axis, int unavailableNeighborMsk) {
         this.blockMesher.doAuxiliaryFaceOffset = false;
         //Hacky generate section side faces (without check neighbor section)
         for (int side = 0; side < 2; side++) {//-, +
             int layer = side == 0 ? 0 : 31;
+            boolean suppressUnknownEdge = axis == 1 && (unavailableNeighborMsk & (16 << side)) != 0;
             this.blockMesher.auxiliaryPosition = layer;
             int cSkips = 0;
             for (int other = 0; other < 32; other++) {
                 int pidx = axis == 0 ? (layer * 32 + other) : (other * 32 + layer);
-                int msk = this.fluidMasks[pidx];
+                int msk = suppressUnknownEdge ? 0 : this.fluidMasks[pidx];
                 if (msk == 0) {
                     cSkips += 32;
                     continue;
@@ -1462,7 +1471,7 @@ public class RenderDataFactory {
         }
     }
 
-    private void generateXOuterFluidGeometry() {
+    private void generateXOuterFluidGeometry(int unavailableNeighborMsk) {
         //Generate the side faces, hackily, using 0 and 31 mesher
 
         var ma = this.xAxisMeshers[0];
@@ -1478,7 +1487,7 @@ public class RenderDataFactory {
             for (int z = 0; z < 32; z++) {
                 int i = y*32+z;
                 int msk = this.fluidMasks[i];
-                if ((msk & 1) != 0) {//-x
+                if ((unavailableNeighborMsk & 1) == 0 && (msk & 1) != 0) {//-x
                     long neighborId = this.neighboringFaces[i];
                     boolean oki = true;
 
@@ -1543,7 +1552,7 @@ public class RenderDataFactory {
                     } else {skipA++;}
                 } else {skipA++;}
 
-                if ((msk & (1<<31)) != 0) {//+x
+                if ((unavailableNeighborMsk & 2) == 0 && (msk & (1<<31)) != 0) {//+x
                     long neighborId = this.neighboringFaces[i+32*32];
                     boolean oki = true;
 
@@ -1835,25 +1844,25 @@ public class RenderDataFactory {
         }
     }
 
-    private void generateFluidFaces() {
+    private void generateFluidFaces(int unavailableNeighborMsk) {
         // The translucent bucket is order-sensitive. Submit side walls first and
         // horizontal surfaces last so water tops do not hide shoreline geometry.
         this.blockMesher.axis = 1;
         this.generateYZFluidInnerGeometry(1);
-        this.generateYZFluidOuterGeometry(1);
+        this.generateYZFluidOuterGeometry(1, unavailableNeighborMsk);
 
         for (var mesher : this.xAxisMeshers) {
             mesher.finish();
         }
         this.generateXInnerFluidGeometry();
-        this.generateXOuterFluidGeometry();
+        this.generateXOuterFluidGeometry(unavailableNeighborMsk);
         for (var mesher : this.xAxisMeshers) {
             mesher.finish();
         }
 
         this.blockMesher.axis = 0;
         this.generateYZFluidInnerGeometry(0);
-        this.generateYZFluidOuterGeometry(0);
+        this.generateYZFluidOuterGeometry(0, unavailableNeighborMsk);
     }
 
     private final int occupancyBarrier(int index) {
@@ -1966,15 +1975,15 @@ public class RenderDataFactory {
         }
         int neighborMsk = neighborMskAndFlags&0b11_11_11;
         int flags = neighborMskAndFlags>>>6;
-        if (CHECK_NEIGHBOR_FACE_OCCLUSION) {
-            this.acquireNeighborData(section, neighborMsk);
-        }
+        int unavailableNeighborMsk = CHECK_NEIGHBOR_FACE_OCCLUSION
+                ? this.acquireNeighborData(section, neighborMsk)
+                : 0;
 
         try {
             this.applyBiomeBlend(rawSection, neighborMsk, CHECK_NEIGHBOR_FACE_OCCLUSION);
             this.generateYZFaces();
             this.generateXFaces();
-            this.generateFluidFaces();
+            this.generateFluidFaces(unavailableNeighborMsk);
         } catch (IdNotYetComputedException e) {
             e.auxBitMsk = neighborMsk;
             e.auxData = this.neighboringFaces;
