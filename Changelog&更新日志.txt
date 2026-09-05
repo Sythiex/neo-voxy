@@ -1,5 +1,17 @@
 Neo Voxy 更新日志 / Changelog
 
+## 0.3.2（1.20.1 Forge 客户端版）— 2026-09-05
+
+### 简体中文
+
+- 修复长时间浏览大量 LOD 后，几何缓冲区碎片化触发 `Geometry OOM` 并导致游戏崩溃的问题。
+- 几何上传现会预检连续空间，在高占用时提前清理不可见节点；分配暂时失败时保留当前网格，待空间回收后安全重试。
+
+### English
+
+- Fixed a `Geometry OOM` crash caused by geometry-buffer fragmentation after viewing a large amount of LOD terrain.
+- Geometry uploads now preflight contiguous space and reclaim invisible nodes earlier under pressure. A temporarily blocked allocation keeps the current mesh and retries safely after reclamation.
+
 ## 0.4.3-beta.2（1.21.1 NeoForge 联动版）— 2026-09-05
 
 ### 简体中文
