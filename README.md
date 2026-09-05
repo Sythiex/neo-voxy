@@ -12,6 +12,10 @@ Neo Voxy 由 **JohnSnow** 维护，在 [NHblock714/voxy](https://github.com/NHbl
 >
 > **服务器数据共享**：Neo-Voxy 与 **Voxy Server Side** 完全兼容，推荐在服务器端部署它
 > 以共享 LOD 数据。
+>
+> **前置与兼容层**：Neo-Voxy 仅需要对应平台的 **Sodium**（NeoForge）或 **Embeddium**（Forge）
+> 作为必要渲染前置；Sinytra Connector 与 **Forgified Fabric API** 不是本项目依赖，且不推荐安装，
+> 以免其兼容层与原生 NeoForge/Forge 注入发生冲突。
 
 
 ## 支持版本

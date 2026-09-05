@@ -12,6 +12,11 @@ Neo Voxy is maintained by **JohnSnow**. It extends [NHblock714/voxy](https://git
 >
 > **Server data sharing**: Neo Voxy is fully compatible with **Voxy Server Side**. Deploying it on
 > the server is recommended for sharing LOD data.
+>
+> **Dependencies and compatibility layers**: Neo Voxy only requires **Sodium** on NeoForge or
+> **Embeddium** on Forge as its renderer dependency. Sinytra Connector and **Forgified Fabric API**
+> are not required and are not recommended, as their compatibility layers may conflict with native
+> NeoForge/Forge injections.
 
 
 ## Supported editions
