@@ -85,7 +85,8 @@ public final class DomumDistantRenderer implements LodPipelineHooks.Renderer {
 
         drainUpdates(128);
         var camera = mc.gameRenderer.getMainCamera().getPosition();
-        double maxDistance = VoxyConfig.CONFIG.sectionRenderDistance * 32.0 * 16.0;
+        double maxDistance = VoxyConfig.CONFIG.createRenderDistance(VoxyConfig.CONFIG.distantDomumMaxChunks);
+        if (!VoxyConfig.CONFIG.distantDomum) return;
         double maxDistanceSq = maxDistance * maxDistance;
         int cx = ((int) Math.floor(camera.x)) >> 4;
         int cz = ((int) Math.floor(camera.z)) >> 4;
@@ -128,7 +129,8 @@ public final class DomumDistantRenderer implements LodPipelineHooks.Renderer {
 
     @Override
     public void render(me.cortex.voxy.client.core.AbstractRenderPipeline pipeline, Viewport<?> viewport, int depthFunc) {
-        if (this.sections.isEmpty() || !VoxyConfig.CONFIG.isRenderingEnabled()) return;
+        if (this.sections.isEmpty() || !VoxyConfig.CONFIG.isRenderingEnabled()
+                || !VoxyConfig.CONFIG.distantDomum) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.level != this.level) return;
         pipeline.setupAndBindOpaque(viewport);
@@ -137,7 +139,7 @@ public final class DomumDistantRenderer implements LodPipelineHooks.Renderer {
         var boundary = LodBoundaryFade.getDistances();
         double handoff = boundary.enabled() ? boundary.fadeStart() : vanillaReach;
         double handoffSq = handoff * handoff;
-        double maxDistance = VoxyConfig.CONFIG.sectionRenderDistance * 32.0 * 16.0;
+        double maxDistance = VoxyConfig.CONFIG.createRenderDistance(VoxyConfig.CONFIG.distantDomumMaxChunks);
         double maxDistanceSq = maxDistance * maxDistance;
         boolean bound = false;
         var transform = new Matrix4f();
@@ -212,7 +214,7 @@ public final class DomumDistantRenderer implements LodPipelineHooks.Renderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == this.level) {
             var camera = mc.gameRenderer.getMainCamera().getPosition();
-            double maxDistance = VoxyConfig.CONFIG.sectionRenderDistance * 32.0 * 16.0;
+            double maxDistance = VoxyConfig.CONFIG.createRenderDistance(VoxyConfig.CONFIG.distantDomumMaxChunks);
             if (distanceSq(key, camera.x, camera.y, camera.z) <= maxDistance * maxDistance
                     && this.queued.add(key)) {
                 if (urgent) this.bakeQueue.addFirst(key);

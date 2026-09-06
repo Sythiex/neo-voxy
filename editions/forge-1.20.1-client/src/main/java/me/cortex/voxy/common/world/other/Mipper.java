@@ -128,6 +128,7 @@ public final class Mipper {
         int uniqueCount = 0;
         int nonAir = 0;
         int fluidLayer = -1;
+        int fluidOccupancy = 0;
         int blockLight = 0;
         int skyLight = 0;
 
@@ -170,10 +171,11 @@ public final class Mipper {
             scratch.uniqueHighestY[uniqueIndex] = Math.max(scratch.uniqueHighestY[uniqueIndex], y);
             if ((scratch.uniqueMetadata[uniqueIndex] & META_FLUID) != 0) {
                 fluidLayer = Math.max(fluidLayer, y);
+                fluidOccupancy++;
             }
         }
 
-        if (fluidLayer >= 0) {
+        if (fluidLayer >= 0 && fluidOccupancy >= 2) {
             boolean coveredByOpaque = false;
             int opaqueScore = 0;
             for (int index = 0; index < 8; index++) {

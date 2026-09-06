@@ -139,7 +139,7 @@ public final class DistantLaserRenderer implements LodPipelineHooks.TranslucentR
         int colorUniform = glGetUniformLocation(shader.id(), "uLaserColor");
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(depthFunc);
-        glDepthMask(false);
+        glDepthMask(true);
         glDisable(GL_CULL_FACE);
 
         Matrix4f transform = new Matrix4f();

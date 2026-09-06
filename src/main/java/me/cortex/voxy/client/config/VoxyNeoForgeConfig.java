@@ -175,6 +175,22 @@ public class VoxyNeoForgeConfig {
             .comment("Maximum Simulated laser LOD distance in chunks. 0 follows Voxy's LOD radius.")
             .defineInRange("distantSimulatedLaserMaxChunks", 0, 0, 192);
 
+    private static final ModConfigSpec.BooleanValue DISTANT_LITTLETILES = BUILDER
+            .comment("Render cached LittleTiles microblock meshes beyond vanilla view distance")
+            .define("distantLittleTiles", true);
+
+    private static final ModConfigSpec.IntValue DISTANT_LITTLETILES_MAX_CHUNKS = BUILDER
+            .comment("Maximum LittleTiles LOD distance in chunks. 0 follows Voxy's LOD radius.")
+            .defineInRange("distantLittleTilesMaxChunks", 0, 0, 192);
+
+    private static final ModConfigSpec.BooleanValue DISTANT_DOMUM = BUILDER
+            .comment("Render detailed Domum Ornamentum models in the LOD")
+            .define("distantDomum", true);
+
+    private static final ModConfigSpec.IntValue DISTANT_DOMUM_MAX_CHUNKS = BUILDER
+            .comment("Maximum Domum Ornamentum LOD distance in chunks. 0 follows Voxy's LOD radius.")
+            .defineInRange("distantDomumMaxChunks", 0, 0, 192);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     private VoxyNeoForgeConfig() {
@@ -213,6 +229,10 @@ public class VoxyNeoForgeConfig {
         VoxyConfig.CONFIG.distantPowerGridWireMaxChunks = DISTANT_POWERGRID_WIRE_MAX_CHUNKS.get();
         VoxyConfig.CONFIG.distantSimulatedLasers = DISTANT_SIMULATED_LASERS.get();
         VoxyConfig.CONFIG.distantSimulatedLaserMaxChunks = DISTANT_SIMULATED_LASER_MAX_CHUNKS.get();
+        VoxyConfig.CONFIG.distantLittleTiles = DISTANT_LITTLETILES.get();
+        VoxyConfig.CONFIG.distantLittleTilesMaxChunks = DISTANT_LITTLETILES_MAX_CHUNKS.get();
+        VoxyConfig.CONFIG.distantDomum = DISTANT_DOMUM.get();
+        VoxyConfig.CONFIG.distantDomumMaxChunks = DISTANT_DOMUM_MAX_CHUNKS.get();
         VoxyConfig.CONFIG.enableFarPlayerRendering = ENABLE_FAR_PLAYER_RENDERING.get();
         VoxyConfig.CONFIG.enableFarVehicleRendering = ENABLE_FAR_VEHICLE_RENDERING.get();
         VoxyConfig.CONFIG.renderFarPlayerNames = RENDER_FAR_PLAYER_NAMES.get();
@@ -254,6 +274,10 @@ public class VoxyNeoForgeConfig {
         DISTANT_POWERGRID_WIRE_MAX_CHUNKS.set(VoxyConfig.CONFIG.distantPowerGridWireMaxChunks);
         DISTANT_SIMULATED_LASERS.set(VoxyConfig.CONFIG.distantSimulatedLasers);
         DISTANT_SIMULATED_LASER_MAX_CHUNKS.set(VoxyConfig.CONFIG.distantSimulatedLaserMaxChunks);
+        DISTANT_LITTLETILES.set(VoxyConfig.CONFIG.distantLittleTiles);
+        DISTANT_LITTLETILES_MAX_CHUNKS.set(VoxyConfig.CONFIG.distantLittleTilesMaxChunks);
+        DISTANT_DOMUM.set(VoxyConfig.CONFIG.distantDomum);
+        DISTANT_DOMUM_MAX_CHUNKS.set(VoxyConfig.CONFIG.distantDomumMaxChunks);
         ENABLE_FAR_PLAYER_RENDERING.set(VoxyConfig.CONFIG.enableFarPlayerRendering);
         ENABLE_FAR_VEHICLE_RENDERING.set(VoxyConfig.CONFIG.enableFarVehicleRendering);
         RENDER_FAR_PLAYER_NAMES.set(VoxyConfig.CONFIG.renderFarPlayerNames);

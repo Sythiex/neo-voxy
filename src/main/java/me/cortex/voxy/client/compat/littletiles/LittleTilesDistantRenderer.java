@@ -127,8 +127,12 @@ public final class LittleTilesDistantRenderer implements LodPipelineHooks.Render
         }
 
         var camera = mc.gameRenderer.getMainCamera().getPosition();
-        double maxDistance = VoxyConfig.CONFIG.sectionRenderDistance * 32.0 * 16.0;
+        double maxDistance = VoxyConfig.CONFIG.createRenderDistance(VoxyConfig.CONFIG.distantLittleTilesMaxChunks);
         drainUpdates(256, camera, maxDistance * maxDistance);
+        if (!VoxyConfig.CONFIG.distantLittleTiles) {
+            discardCompletedBakes();
+            return;
+        }
         refreshCandidates(camera.x, camera.y, camera.z, maxDistance);
         uploadCompleted(camera.x, camera.y, camera.z, maxDistance * maxDistance);
         scheduleBakes(camera.x, camera.y, camera.z, maxDistance * maxDistance);
@@ -146,7 +150,8 @@ public final class LittleTilesDistantRenderer implements LodPipelineHooks.Render
 
     @Override
     public void render(me.cortex.voxy.client.core.AbstractRenderPipeline pipeline, Viewport<?> viewport, int depthFunc) {
-        if (this.sections.isEmpty() || !VoxyConfig.CONFIG.isRenderingEnabled()) return;
+        if (this.sections.isEmpty() || !VoxyConfig.CONFIG.isRenderingEnabled()
+                || !VoxyConfig.CONFIG.distantLittleTiles) return;
         var mc = Minecraft.getInstance();
         if (mc.level == null) return;
         pipeline.setupAndBindOpaque(viewport);
@@ -156,7 +161,7 @@ public final class LittleTilesDistantRenderer implements LodPipelineHooks.Render
         boolean hardFadeHandoff = boundary.enabled();
         double handoffDistance = hardFadeHandoff ? boundary.fadeStart() : vanillaReach;
         double handoffDistanceSq = handoffDistance * handoffDistance;
-        double maxDistance = VoxyConfig.CONFIG.sectionRenderDistance * 32.0 * 16.0;
+        double maxDistance = VoxyConfig.CONFIG.createRenderDistance(VoxyConfig.CONFIG.distantLittleTilesMaxChunks);
         double maxDistanceSq = maxDistance * maxDistance;
         boolean bound = false;
         var transform = new Matrix4f();

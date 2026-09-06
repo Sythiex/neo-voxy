@@ -82,7 +82,7 @@ Neo-Voxy 为远距离地形提供高性能 LOD 渲染，并针对 NeoForge、Sod
 | 分支 | Neo-Voxy 版本 | Java | NeoForge |
 |---|---|---:|---|
 | Minecraft 1.21.1 | 0.3.1 | 21 | 21.1.x |
-| Minecraft 26.1.2 | 0.3.1 | 25 | 26.1.2.x |
+| Minecraft 26.1.2 | 0.3.2 | 25 | 26.1.2.x |
 
 ### 开发说明
 
@@ -94,8 +94,8 @@ Neo-Voxy 为远距离地形提供高性能 LOD 渲染，并针对 NeoForge、Sod
 .\gradlew clean build
 ```
 
-1.21.1 分支已将发布包裁剪整合为 Gradle 的 `slimJar` 任务。执行 `build` 会自动生成
-`build/libs/neo-voxy-0.3.1-slim.jar`，不再需要 Python 或 `tools` 目录。该发布包仅保留
+26.1.2 分支已将发布包裁剪整合为 Gradle 的 `slimJar` 任务。执行 `build` 会自动生成
+`build/libs/neo-voxy-0.3.2-mc26.1.2-neoforge-client.jar`，不再需要 Python 或 `tools` 目录。该发布包仅保留
 Windows/Linux x86_64 原生库；未带 `-slim` 的大体积 JAR 仅用于构建检查。
 
 1.21.1 的 Create、Sable、EclipticSeasons 等源码联动需要在 `libs/aero-spike` 中提供
@@ -161,7 +161,7 @@ not register its listeners, renderers, or recurring work, and the matching setti
 | Branch | Neo-Voxy version | Java | NeoForge |
 |---|---|---:|---|
 | Minecraft 1.21.1 | 0.3.1 | 21 | 21.1.x |
-| Minecraft 26.1.2 | 0.3.1 | 25 | 26.1.2.x |
+| Minecraft 26.1.2 | 0.3.2 | 25 | 26.1.2.x |
 
 ### Development note
 
@@ -174,8 +174,8 @@ before release. Source comments are intentionally concise.
 .\gradlew clean build
 ```
 
-The 1.21.1 branch now implements release trimming as the Gradle `slimJar` task. `build` automatically
-creates `build/libs/neo-voxy-0.3.1-slim.jar`; Python and the `tools` directory are no longer needed.
+The 26.1.2 branch implements release trimming as the Gradle `slimJar` task. `build` automatically
+creates `build/libs/neo-voxy-0.3.2-mc26.1.2-neoforge-client.jar`; Python and the `tools` directory are no longer needed.
 The release JAR keeps only Windows/Linux x86_64 natives. The large JAR without `-slim` is retained
 only as an intermediate build artifact.
 

@@ -25,8 +25,8 @@ Neo Voxy is maintained by **JohnSnow**. It extends [NHblock714/voxy](https://git
 |---|---|---|---:|---|
 | 1.21.1 NeoForge integrations | Client and server | Sodium 0.8 / Iris | 21 | `neo-voxy-0.4.4-beta.1-mc1.21.1-neoforge-integrations.jar` |
 | 1.21.1 NeoForge client | Client only | Sodium 0.8 / Iris | 21 | `neo-voxy-0.3.0-mc1.21.1-neoforge-client.jar` |
-| 1.20.1 Forge client | Client only | Embeddium / Oculus | 17 | `neo-voxy-0.3.2-forge-client.jar` |
-| 26.1.2 NeoForge client | Client only | Sodium 0.9.2-alpha.4+ / Iris 1.11.2+ | 25 | `neo-voxy-0.3.1-mc26.1.2-neoforge-client.jar` |
+| 1.20.1 Forge client | Client only | Embeddium / Oculus | 17 | `neo-voxy-0.3.3-mc1.20.1-forge-client.jar` |
+| 26.1.2 NeoForge client | Client only | Sodium 0.9.2-alpha.4+ / Iris 1.11.2+ | 25 | `neo-voxy-0.3.2-mc26.1.2-neoforge-client.jar` |
 
 Release JARs remove unused platform natives, duplicate module descriptors, and build intermediates. Runtime shaders, languages, models, and storage libraries are retained.
 

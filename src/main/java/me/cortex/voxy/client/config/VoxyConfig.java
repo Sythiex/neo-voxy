@@ -62,6 +62,10 @@ public class VoxyConfig {
     public int distantPowerGridWireMaxChunks = 0;
     public boolean distantSimulatedLasers = true;
     public int distantSimulatedLaserMaxChunks = 0;
+    public boolean distantLittleTiles = true;
+    public int distantLittleTilesMaxChunks = 0;
+    public boolean distantDomum = true;
+    public int distantDomumMaxChunks = 0;
     public int distantContraptionGpuBudgetMiB = 48;
     public int distantKineticGpuBudgetMiB = 32;
     // Experimental, shader-pack supplied LOD-only programs. Resolved only during shader reload.
