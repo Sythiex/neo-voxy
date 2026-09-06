@@ -167,6 +167,14 @@ public class VoxyNeoForgeConfig {
             .comment("Maximum PowerGrid wire LOD distance in chunks. 0 follows Voxy's LOD radius.")
             .defineInRange("distantPowerGridWireMaxChunks", 0, 0, 192);
 
+    private static final ModConfigSpec.BooleanValue DISTANT_SIMULATED_LASERS = BUILDER
+            .comment("Render Simulated laser-pointer beams beyond block-entity render distance")
+            .define("distantSimulatedLasers", true);
+
+    private static final ModConfigSpec.IntValue DISTANT_SIMULATED_LASER_MAX_CHUNKS = BUILDER
+            .comment("Maximum Simulated laser LOD distance in chunks. 0 follows Voxy's LOD radius.")
+            .defineInRange("distantSimulatedLaserMaxChunks", 0, 0, 192);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     private VoxyNeoForgeConfig() {
@@ -203,6 +211,8 @@ public class VoxyNeoForgeConfig {
         VoxyConfig.CONFIG.distantKinetics = DISTANT_KINETICS.get();
         VoxyConfig.CONFIG.distantPowerGridWires = DISTANT_POWERGRID_WIRES.get();
         VoxyConfig.CONFIG.distantPowerGridWireMaxChunks = DISTANT_POWERGRID_WIRE_MAX_CHUNKS.get();
+        VoxyConfig.CONFIG.distantSimulatedLasers = DISTANT_SIMULATED_LASERS.get();
+        VoxyConfig.CONFIG.distantSimulatedLaserMaxChunks = DISTANT_SIMULATED_LASER_MAX_CHUNKS.get();
         VoxyConfig.CONFIG.enableFarPlayerRendering = ENABLE_FAR_PLAYER_RENDERING.get();
         VoxyConfig.CONFIG.enableFarVehicleRendering = ENABLE_FAR_VEHICLE_RENDERING.get();
         VoxyConfig.CONFIG.renderFarPlayerNames = RENDER_FAR_PLAYER_NAMES.get();
@@ -242,6 +252,8 @@ public class VoxyNeoForgeConfig {
         DISTANT_KINETICS.set(VoxyConfig.CONFIG.distantKinetics);
         DISTANT_POWERGRID_WIRES.set(VoxyConfig.CONFIG.distantPowerGridWires);
         DISTANT_POWERGRID_WIRE_MAX_CHUNKS.set(VoxyConfig.CONFIG.distantPowerGridWireMaxChunks);
+        DISTANT_SIMULATED_LASERS.set(VoxyConfig.CONFIG.distantSimulatedLasers);
+        DISTANT_SIMULATED_LASER_MAX_CHUNKS.set(VoxyConfig.CONFIG.distantSimulatedLaserMaxChunks);
         ENABLE_FAR_PLAYER_RENDERING.set(VoxyConfig.CONFIG.enableFarPlayerRendering);
         ENABLE_FAR_VEHICLE_RENDERING.set(VoxyConfig.CONFIG.enableFarVehicleRendering);
         RENDER_FAR_PLAYER_NAMES.set(VoxyConfig.CONFIG.renderFarPlayerNames);

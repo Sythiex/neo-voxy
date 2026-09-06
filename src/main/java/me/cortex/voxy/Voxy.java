@@ -121,6 +121,12 @@ public class Voxy {
                 me.cortex.voxy.client.compat.LodPipelineHooks.register(wireRenderer);
             }
 
+            if (ModList.get().isLoaded("simulated")) {
+                var laserRenderer = new me.cortex.voxy.client.compat.simulated.DistantLaserRenderer();
+                NeoForge.EVENT_BUS.register(laserRenderer);
+                me.cortex.voxy.client.compat.LodPipelineHooks.registerTranslucent(laserRenderer);
+            }
+
             //Beacon beams derived from the voxel store, so one shows up whether or not its chunk was
             //ever loaded this session. Vanilla, not create - registered unconditionally.
             var beaconRenderer = new me.cortex.voxy.client.core.beacon.DistantBeaconRenderer();

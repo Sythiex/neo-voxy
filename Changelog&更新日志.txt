@@ -1,5 +1,19 @@
 Neo Voxy 更新日志 / Changelog
 
+## 0.4.5-beta.1（1.21.1 NeoForge 联动版）— 2026-09-06
+
+### 简体中文
+
+- 新增 Simulated 激光指示器远景光束：保留动态方向、命中长度、颜色、红石强度与末端渐弱，并在原版方块实体渲染距离外继续显示。
+- 新增独立的 LOD 半透明绘制阶段，使激光正确使用 Voxy 地形深度，并接入 Iris 光影的透明 G-buffer；交界处保留安全重叠以避免闪烁。
+- 新增远景激光开关与距离选项；仅安装 Simulated 时注册采集和渲染逻辑。PowerGrid 兼容状态更新为完全兼容。
+
+### English
+
+- Added distant Simulated laser-pointer beams, preserving dynamic direction, hit length, colour, redstone strength, and end falloff beyond block-entity render distance.
+- Added a dedicated LOD translucent stage so lasers use Voxy terrain depth and the Iris translucent G-buffer, with a small safe handoff overlap to prevent flicker.
+- Added independent distant-laser and distance options. Capture and rendering register only when Simulated is installed. PowerGrid is now marked fully compatible.
+
 ## 0.4.4-beta.1（1.21.1 NeoForge 联动版）— 2026-09-06
 
 ### 简体中文

@@ -54,7 +54,8 @@ Release JARs remove unused platform natives, duplicate module descriptors, and b
 | Ecliptic Seasons | ✅ | — | — | — | Seasonal snow in distant terrain |
 | Domum Ornamentum | ✅ | — | — | — | Full support: detailed dedicated models, materials, and persistent cache |
 | LittleTiles | 🧪 | — | — | — | Preliminary: persistent lightweight 1/8-block LOD meshes for static structures |
-| PowerGrid | 🧪 | — | — | — | Preliminary: persistent simplified catenary LOD meshes for hanging wires |
+| PowerGrid | ✅ | — | — | — | Full support: persistent simplified catenary LOD meshes for hanging wires |
+| Simulated / Create Aeronautics | 🧪 | — | — | — | Laser-pointer beams remain visible beyond block-entity range |
 
 `✅` means supported, `🧪` means preliminary compatibility, and `—` means no dedicated feature or not applicable; it does not necessarily imply incompatibility with basic terrain LOD rendering. Optional integrations activate only when the corresponding mod is installed. Create, Sable, and seasonal compatibility originate from **NHblock**.
 
@@ -71,7 +72,8 @@ Release JARs remove unused platform natives, duplicate module descriptors, and b
 - Subdivision size: controls the screen-space threshold for finer LODs. Lower values improve detail at higher build and rendering cost.
 - World curvature: all four editions curve only the LOD beyond vanilla distance in the GPU vertex stage; 0 disables it.
 - Distant beacons: the integrations edition builds beams from cached columns, hands off only after the vanilla beam is ready, uses a gentle unbounded width curve at extreme range, and submits lightweight shadow geometry during Iris shadow passes.
-- PowerGrid distant wires: the integrations edition stores hanging wires the player has seen and reconstructs simplified catenaries from their endpoints and cable length beyond entity tracking range. It has an independent switch and distance limit.
+- PowerGrid distant wires: the integrations edition stores hanging wires the player has seen and reconstructs simplified catenaries from their endpoints and cable length beyond entity tracking range. This integration is considered fully compatible and has an independent switch and distance limit.
+- Simulated distant lasers: the integrations edition captures each laser pointer's dynamic direction, length, colour, and redstone strength, then continues rendering it through a dedicated translucent stage beyond block-entity range. It has an independent switch and distance limit.
 - Join message: shown whenever a server or single-player world is entered, enabled by default and removable from the Neo Voxy Sodium/Embeddium settings.
 
 ## Building

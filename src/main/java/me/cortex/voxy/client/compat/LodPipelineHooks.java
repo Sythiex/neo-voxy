@@ -19,6 +19,14 @@ import static org.lwjgl.opengl.GL11C.glDisable;
 import static org.lwjgl.opengl.GL11C.glEnable;
 import static org.lwjgl.opengl.GL11C.glGetInteger;
 import static org.lwjgl.opengl.GL11C.glIsEnabled;
+import static org.lwjgl.opengl.GL14C.GL_BLEND_DST_ALPHA;
+import static org.lwjgl.opengl.GL14C.GL_BLEND_DST_RGB;
+import static org.lwjgl.opengl.GL14C.GL_BLEND_SRC_ALPHA;
+import static org.lwjgl.opengl.GL14C.GL_BLEND_SRC_RGB;
+import static org.lwjgl.opengl.GL14C.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL20C.GL_BLEND_EQUATION_ALPHA;
+import static org.lwjgl.opengl.GL20C.GL_BLEND_EQUATION_RGB;
+import static org.lwjgl.opengl.GL20C.glBlendEquationSeparate;
 import static org.lwjgl.opengl.GL13C.GL_ACTIVE_TEXTURE;
 import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13C.glActiveTexture;
@@ -36,6 +44,11 @@ public final class LodPipelineHooks {
         void render(me.cortex.voxy.client.core.AbstractRenderPipeline pipeline, Viewport<?> viewport, int depthFunc);
     }
 
+    public interface TranslucentRenderer {
+        void renderTranslucent(me.cortex.voxy.client.core.AbstractRenderPipeline pipeline,
+                               Viewport<?> viewport, int depthFunc);
+    }
+
     //Frame recorder for occlusion debugging: begin() samples the depth/stencil state the renderers
     //are about to test against, end() samples what they left behind. Registered by the compat side.
     public interface FrameDebugProbe {
@@ -46,6 +59,7 @@ public final class LodPipelineHooks {
     public static volatile FrameDebugProbe frameDebugProbe;
 
     private static final List<Renderer> RENDERERS = new CopyOnWriteArrayList<>();
+    private static final List<TranslucentRenderer> TRANSLUCENT_RENDERERS = new CopyOnWriteArrayList<>();
     private static boolean errored;
 
     //One-shot depth probe for /voxy debug trains: reads back the depth state and the centre pixels
@@ -57,6 +71,29 @@ public final class LodPipelineHooks {
 
     public static void register(Renderer renderer) {
         RENDERERS.add(renderer);
+    }
+
+    public static void registerTranslucent(TranslucentRenderer renderer) {
+        TRANSLUCENT_RENDERERS.add(renderer);
+    }
+
+    public static void translucent(me.cortex.voxy.client.core.AbstractRenderPipeline pipeline,
+                                   Viewport<?> viewport, int depthFunc) {
+        if (TRANSLUCENT_RENDERERS.isEmpty()) return;
+        renderStateGuarded(() -> {
+            for (TranslucentRenderer renderer : TRANSLUCENT_RENDERERS) {
+                try {
+                    long t = me.cortex.voxy.commonImpl.VoxyProfile.begin();
+                    renderer.renderTranslucent(pipeline, viewport, depthFunc);
+                    me.cortex.voxy.commonImpl.VoxyProfile.end("render/" + renderer.getClass().getSimpleName(), t);
+                } catch (Throwable e) {
+                    if (!errored) {
+                        errored = true;
+                        Logger.error("LOD translucent render hook failed (logged once)", e);
+                    }
+                }
+            }
+        });
     }
 
     public static void beforeTranslucent(me.cortex.voxy.client.core.AbstractRenderPipeline pipeline, Viewport<?> viewport, int depthFunc) {
@@ -148,6 +185,12 @@ public final class LodPipelineHooks {
         boolean prevDepthMask = glGetInteger(GL_DEPTH_WRITEMASK) != 0;
         boolean prevCull = glIsEnabled(GL_CULL_FACE);
         boolean prevBlend = glIsEnabled(GL_BLEND);
+        int prevBlendSrcRgb = glGetInteger(GL_BLEND_SRC_RGB);
+        int prevBlendDstRgb = glGetInteger(GL_BLEND_DST_RGB);
+        int prevBlendSrcAlpha = glGetInteger(GL_BLEND_SRC_ALPHA);
+        int prevBlendDstAlpha = glGetInteger(GL_BLEND_DST_ALPHA);
+        int prevBlendEquationRgb = glGetInteger(GL_BLEND_EQUATION_RGB);
+        int prevBlendEquationAlpha = glGetInteger(GL_BLEND_EQUATION_ALPHA);
         try {
             body.run();
         } finally {
@@ -177,6 +220,8 @@ public final class LodPipelineHooks {
             } else {
                 glDisable(GL_BLEND);
             }
+            glBlendFuncSeparate(prevBlendSrcRgb, prevBlendDstRgb, prevBlendSrcAlpha, prevBlendDstAlpha);
+            glBlendEquationSeparate(prevBlendEquationRgb, prevBlendEquationAlpha);
         }
     }
 

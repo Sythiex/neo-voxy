@@ -31,6 +31,7 @@ public class VoxyConfigMenu implements ConfigEntryPoint {
         boolean sableInstalled = ModList.get().isLoaded("sable");
         boolean createInstalled = ModList.get().isLoaded("create");
         boolean powerGridInstalled = ModList.get().isLoaded("powergrid");
+        boolean simulatedInstalled = ModList.get().isLoaded("simulated");
         boolean seasonsInstalled = ModList.get().isLoaded("eclipticseasons");
 
         var cc = B.registerModOptions("voxy", VoxyCommon.displayName(), VoxyCommon.MOD_VERSION)
@@ -414,6 +415,20 @@ public class VoxyConfigMenu implements ConfigEntryPoint {
                                         .setFormatter(VoxyConfigMenu::formatCreateDistance)
                                         .setImpact(OptionImpact.LOW)
                         ).setEnablerInherit(s->powerGridInstalled),
+                        new Group(Component.translatable("voxy.config.group.simulated"),
+                                new BoolOption(
+                                        "voxy:distant_simulated_lasers",
+                                        Component.translatable("voxy.config.compat.distantSimulatedLasers"),
+                                        ()->CFG.distantSimulatedLasers, v->CFG.distantSimulatedLasers=v)
+                                        .setImpact(OptionImpact.LOW),
+                                new IntOption(
+                                        "voxy:distant_simulated_laser_distance",
+                                        Component.translatable("voxy.config.compat.distantSimulatedLaserDistance"),
+                                        ()->CFG.distantSimulatedLaserMaxChunks, v->CFG.distantSimulatedLaserMaxChunks=v,
+                                        new Range(0, 192, 8))
+                                        .setFormatter(VoxyConfigMenu::formatCreateDistance)
+                                        .setImpact(OptionImpact.LOW)
+                        ).setEnablerInherit(s->simulatedInstalled),
                         new Group(Component.translatable("voxy.config.group.seasons"),
                                 new BoolOption(
                                         "voxy:es_snow_lod",
