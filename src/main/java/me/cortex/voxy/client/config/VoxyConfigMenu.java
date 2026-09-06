@@ -30,6 +30,7 @@ public class VoxyConfigMenu implements ConfigEntryPoint {
         var CFG = VoxyConfig.CONFIG;
         boolean sableInstalled = ModList.get().isLoaded("sable");
         boolean createInstalled = ModList.get().isLoaded("create");
+        boolean powerGridInstalled = ModList.get().isLoaded("powergrid");
         boolean seasonsInstalled = ModList.get().isLoaded("eclipticseasons");
 
         var cc = B.registerModOptions("voxy", VoxyCommon.displayName(), VoxyCommon.MOD_VERSION)
@@ -399,6 +400,20 @@ public class VoxyConfigMenu implements ConfigEntryPoint {
                                         ()->CFG.kineticEnclosedCulling, v->CFG.kineticEnclosedCulling=v)
                                         .setImpact(OptionImpact.LOW)
                         ).setEnablerInherit(s->createInstalled),
+                        new Group(Component.translatable("voxy.config.group.powergrid"),
+                                new BoolOption(
+                                        "voxy:distant_powergrid_wires",
+                                        Component.translatable("voxy.config.compat.distantPowerGridWires"),
+                                        ()->CFG.distantPowerGridWires, v->CFG.distantPowerGridWires=v)
+                                        .setImpact(OptionImpact.LOW),
+                                new IntOption(
+                                        "voxy:distant_powergrid_wire_distance",
+                                        Component.translatable("voxy.config.compat.distantPowerGridWireDistance"),
+                                        ()->CFG.distantPowerGridWireMaxChunks, v->CFG.distantPowerGridWireMaxChunks=v,
+                                        new Range(0, 192, 8))
+                                        .setFormatter(VoxyConfigMenu::formatCreateDistance)
+                                        .setImpact(OptionImpact.LOW)
+                        ).setEnablerInherit(s->powerGridInstalled),
                         new Group(Component.translatable("voxy.config.group.seasons"),
                                 new BoolOption(
                                         "voxy:es_snow_lod",

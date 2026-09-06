@@ -115,6 +115,12 @@ public class Voxy {
                 me.cortex.voxy.client.compat.LodPipelineHooks.register(domumRenderer);
             }
 
+            if (ModList.get().isLoaded("powergrid")) {
+                var wireRenderer = new me.cortex.voxy.client.compat.powergrid.PowerGridWireRenderer();
+                NeoForge.EVENT_BUS.register(wireRenderer);
+                me.cortex.voxy.client.compat.LodPipelineHooks.register(wireRenderer);
+            }
+
             //Beacon beams derived from the voxel store, so one shows up whether or not its chunk was
             //ever loaded this session. Vanilla, not create - registered unconditionally.
             var beaconRenderer = new me.cortex.voxy.client.core.beacon.DistantBeaconRenderer();

@@ -1,5 +1,19 @@
 Neo Voxy 更新日志 / Changelog
 
+## 0.4.4-beta.1（1.21.1 NeoForge 联动版）— 2026-09-06
+
+### 简体中文
+
+- 新增 PowerGrid 悬垂电线远景兼容：按原始端点、线长、粗细与颜色生成简化悬链线网格，并接入 Voxy 地形深度、光照和 Iris 光影管线。
+- 电线快照随 Voxy 世界缓存持久化，在 PowerGrid 实体离开跟踪范围或重进世界后继续显示；靠近实体时交还原版渲染。
+- 新增远景电线开关与距离选项；兼容逻辑仅在安装 PowerGrid 时注册。
+
+### English
+
+- Added distant rendering for PowerGrid hanging wires. Simplified catenary meshes preserve endpoints, cable length, thickness, and colour while using Voxy terrain depth, lighting, and the Iris shader pipeline.
+- Wire snapshots persist with the Voxy world cache and remain visible after PowerGrid entities leave tracking range or the world is rejoined; native rendering takes over again nearby.
+- Added independent distant-wire and distance options. The integration registers only when PowerGrid is installed.
+
 ## 0.3.2（1.20.1 Forge 客户端版）— 2026-09-05
 
 ### 简体中文

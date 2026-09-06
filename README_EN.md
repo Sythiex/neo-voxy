@@ -23,7 +23,7 @@ Neo Voxy is maintained by **JohnSnow**. It extends [NHblock714/voxy](https://git
 
 | Edition | Install side | Renderer | Java | Release file |
 |---|---|---|---:|---|
-| 1.21.1 NeoForge integrations | Client and server | Sodium 0.8 / Iris | 21 | `neo-voxy-0.4.3-beta.2-mc1.21.1-neoforge-integrations.jar` |
+| 1.21.1 NeoForge integrations | Client and server | Sodium 0.8 / Iris | 21 | `neo-voxy-0.4.4-beta.1-mc1.21.1-neoforge-integrations.jar` |
 | 1.21.1 NeoForge client | Client only | Sodium 0.8 / Iris | 21 | `neo-voxy-0.3.0-mc1.21.1-neoforge-client.jar` |
 | 1.20.1 Forge client | Client only | Embeddium / Oculus | 17 | `neo-voxy-0.3.2-forge-client.jar` |
 | 26.1.2 NeoForge client | Client only | Sodium 0.9.2-alpha.4+ / Iris 1.11.2+ | 25 | `neo-voxy-0.3.1-mc26.1.2-neoforge-client.jar` |
@@ -54,6 +54,7 @@ Release JARs remove unused platform natives, duplicate module descriptors, and b
 | Ecliptic Seasons | ✅ | — | — | — | Seasonal snow in distant terrain |
 | Domum Ornamentum | ✅ | — | — | — | Full support: detailed dedicated models, materials, and persistent cache |
 | LittleTiles | 🧪 | — | — | — | Preliminary: persistent lightweight 1/8-block LOD meshes for static structures |
+| PowerGrid | 🧪 | — | — | — | Preliminary: persistent simplified catenary LOD meshes for hanging wires |
 
 `✅` means supported, `🧪` means preliminary compatibility, and `—` means no dedicated feature or not applicable; it does not necessarily imply incompatibility with basic terrain LOD rendering. Optional integrations activate only when the corresponding mod is installed. Create, Sable, and seasonal compatibility originate from **NHblock**.
 
@@ -70,6 +71,7 @@ Release JARs remove unused platform natives, duplicate module descriptors, and b
 - Subdivision size: controls the screen-space threshold for finer LODs. Lower values improve detail at higher build and rendering cost.
 - World curvature: all four editions curve only the LOD beyond vanilla distance in the GPU vertex stage; 0 disables it.
 - Distant beacons: the integrations edition builds beams from cached columns, hands off only after the vanilla beam is ready, uses a gentle unbounded width curve at extreme range, and submits lightweight shadow geometry during Iris shadow passes.
+- PowerGrid distant wires: the integrations edition stores hanging wires the player has seen and reconstructs simplified catenaries from their endpoints and cable length beyond entity tracking range. It has an independent switch and distance limit.
 - Join message: shown whenever a server or single-player world is entered, enabled by default and removable from the Neo Voxy Sodium/Embeddium settings.
 
 ## Building

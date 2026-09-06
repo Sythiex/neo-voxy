@@ -159,6 +159,14 @@ public class VoxyNeoForgeConfig {
                      "distance so they stop floating over the LOD. Off = Create draws them natively.")
             .define("distantKinetics", true);
 
+    private static final ModConfigSpec.BooleanValue DISTANT_POWERGRID_WIRES = BUILDER
+            .comment("Render cached PowerGrid hanging wires beyond their entity tracking range")
+            .define("distantPowerGridWires", true);
+
+    private static final ModConfigSpec.IntValue DISTANT_POWERGRID_WIRE_MAX_CHUNKS = BUILDER
+            .comment("Maximum PowerGrid wire LOD distance in chunks. 0 follows Voxy's LOD radius.")
+            .defineInRange("distantPowerGridWireMaxChunks", 0, 0, 192);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     private VoxyNeoForgeConfig() {
@@ -193,6 +201,8 @@ public class VoxyNeoForgeConfig {
         VoxyConfig.CONFIG.distantBeacons = DISTANT_BEACONS.get();
         VoxyConfig.CONFIG.distantBeaconMaxChunks = DISTANT_BEACON_MAX_CHUNKS.get();
         VoxyConfig.CONFIG.distantKinetics = DISTANT_KINETICS.get();
+        VoxyConfig.CONFIG.distantPowerGridWires = DISTANT_POWERGRID_WIRES.get();
+        VoxyConfig.CONFIG.distantPowerGridWireMaxChunks = DISTANT_POWERGRID_WIRE_MAX_CHUNKS.get();
         VoxyConfig.CONFIG.enableFarPlayerRendering = ENABLE_FAR_PLAYER_RENDERING.get();
         VoxyConfig.CONFIG.enableFarVehicleRendering = ENABLE_FAR_VEHICLE_RENDERING.get();
         VoxyConfig.CONFIG.renderFarPlayerNames = RENDER_FAR_PLAYER_NAMES.get();
@@ -230,6 +240,8 @@ public class VoxyNeoForgeConfig {
         DISTANT_BEACONS.set(VoxyConfig.CONFIG.distantBeacons);
         DISTANT_BEACON_MAX_CHUNKS.set(VoxyConfig.CONFIG.distantBeaconMaxChunks);
         DISTANT_KINETICS.set(VoxyConfig.CONFIG.distantKinetics);
+        DISTANT_POWERGRID_WIRES.set(VoxyConfig.CONFIG.distantPowerGridWires);
+        DISTANT_POWERGRID_WIRE_MAX_CHUNKS.set(VoxyConfig.CONFIG.distantPowerGridWireMaxChunks);
         ENABLE_FAR_PLAYER_RENDERING.set(VoxyConfig.CONFIG.enableFarPlayerRendering);
         ENABLE_FAR_VEHICLE_RENDERING.set(VoxyConfig.CONFIG.enableFarVehicleRendering);
         RENDER_FAR_PLAYER_NAMES.set(VoxyConfig.CONFIG.renderFarPlayerNames);

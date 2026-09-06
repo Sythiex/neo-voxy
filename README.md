@@ -22,7 +22,7 @@ Neo Voxy 由 **JohnSnow** 维护，在 [NHblock714/voxy](https://github.com/NHbl
 
 | 版本 | 安装位置 | 渲染依赖 | Java | 发布文件 |
 |---|---|---|---:|---|
-| 1.21.1 NeoForge 联动版 | 客户端与服务端 | Sodium 0.8 / Iris | 21 | `neo-voxy-0.4.3-beta.2-mc1.21.1-neoforge-integrations.jar` |
+| 1.21.1 NeoForge 联动版 | 客户端与服务端 | Sodium 0.8 / Iris | 21 | `neo-voxy-0.4.4-beta.1-mc1.21.1-neoforge-integrations.jar` |
 | 1.21.1 NeoForge 纯客户端版 | 仅客户端 | Sodium 0.8 / Iris | 21 | `neo-voxy-0.3.0-mc1.21.1-neoforge-client.jar` |
 | 1.20.1 Forge 纯客户端版 | 仅客户端 | Embeddium / Oculus | 17 | `neo-voxy-0.3.2-forge-client.jar` |
 | 26.1.2 NeoForge 纯客户端版 | 仅客户端 | Sodium 0.9.2-alpha.4+ / Iris 1.11.2+ | 25 | `neo-voxy-0.3.1-mc26.1.2-neoforge-client.jar` |
@@ -53,6 +53,7 @@ Neo Voxy 由 **JohnSnow** 维护，在 [NHblock714/voxy](https://github.com/NHbl
 | Ecliptic Seasons | ✅ | — | — | — | 远景季节积雪 |
 | Domum Ornamentum | ✅ | — | — | — | 完全兼容：精细独立模型、材质与持久缓存 |
 | LittleTiles | 🧪 | — | — | — | 初步兼容：静态结构使用持久化的 1/8 格轻量 LOD 网格 |
+| PowerGrid | 🧪 | — | — | — | 初步兼容：悬垂电线使用持久化的简化悬链线 LOD 网格 |
 
 `✅` 表示支持，`🧪` 表示初步兼容，`—` 表示未包含专项功能或不适用；后者不代表基础地形 LOD 一定与该模组冲突。专项联动仅在对应模组已安装时启用。Create、Sable 与节气兼容来自 **NHblock**。
 
@@ -69,6 +70,7 @@ Neo Voxy 由 **JohnSnow** 维护，在 [NHblock714/voxy](https://github.com/NHbl
 - 细分尺寸：控制屏幕空间触发更细 LOD 的阈值；数值越小画质越高，构建和渲染开销也越高。
 - 世界曲率：四个版本均可在 GPU 顶点阶段弯曲原版距离外的 LOD；0 为关闭。
 - 远景信标：联动版以缓存列生成光柱；靠近时确认原版光柱已就绪后再交接，极远距离使用平缓且无硬上限的宽度曲线，并在 Iris 阴影阶段提交轻量阴影模型。
+- PowerGrid 远景电线：联动版会保存玩家见过的悬垂电线，在实体跟踪范围外按原端点和线长重建简化悬链线；可单独开关并限制距离。
 - 进服消息：每次进入服务器或单人世界显示版本提示，默认开启，可在 Sodium/Embeddium 的 Neo Voxy 配置中关闭。
 
 ## 构建
