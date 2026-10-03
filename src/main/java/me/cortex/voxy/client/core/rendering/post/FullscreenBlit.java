@@ -1,5 +1,7 @@
 package me.cortex.voxy.client.core.rendering.post;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.VertexBuffer;
 import me.cortex.voxy.client.core.RenderProperties;
 import me.cortex.voxy.client.core.gl.shader.Shader;
 import me.cortex.voxy.client.core.gl.shader.ShaderType;
@@ -11,7 +13,6 @@ import java.util.function.Function;
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.glBindBuffer;
-import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL45C.glCreateVertexArrays;
 
 public class FullscreenBlit {
@@ -44,11 +45,12 @@ public class FullscreenBlit {
     }
 
     public void blit() {
-        glBindVertexArray(EMPTY_VAO);
+        GlStateManager._glBindVertexArray(EMPTY_VAO);
         this.shader.bind();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, SharedIndexBuffer.INSTANCE_BYTE.id());
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, 0);
-        glBindVertexArray(0);
+        // Invalidate BufferUploader's cached binding and notify modded GL state trackers.
+        VertexBuffer.unbind();
     }
 
     public void delete() {
